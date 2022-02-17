@@ -90,3 +90,136 @@ class Transmisson(models.Model):
         
     def __str__(self):
         return self.title
+
+
+class Car(models.Model):
+    class CarEngineCapacity(models.TextChoices):
+        LOW_1 = 'L_1', ('< 1000')
+        LOW_2 = 'L_2', ('1001 - 1300')
+        LOW_3 = 'L_3', ('1301 - 1400')
+        LOW_4 = 'L_4', ('1401 - 1600')
+        LOW_5 = 'L_5', ('1601 - 1800')
+        MEDIUM_1 = 'M_1', ('1801 - 2000')
+        MEDIUM_2 = 'M_2', ('2001 - 2500')
+        MEDIUM_3 = 'M_3', ('2501 - 3000')
+        HIGH_1 = 'H_1', ('3001 - 3500')
+        HIGH_2 = 'H_2', ('3501 - 4000')
+        HIGH_3 = 'H_3', ('4001 - 10000')
+        ELECTRICITY = 'E', ('Electricity')
+    
+    class CarType(models.TextChoices):
+        sedan = 'SDN', ('Sedan')
+        coupe = 'CPE', ('Coupe')
+        sports_car = 'SCR', ('Sports car')
+        wagon = 'WGN', ('Wagon')
+        hatchback = 'HTB', ('Hatchback')
+        convertible = 'CNV', ('Convertible')
+        suv = 'SUV', ('SUV')
+        minivan = 'MNV', ('Minivan')
+        pickup = 'PCK', ('Pickup')
+    
+    class SeatNumber(models.TextChoices):
+        two = '2', ('2')
+        four = '4', ('4')
+        five = '5', ('5')
+        seven = '7', ('7')
+        ten = '10', ('10')
+    
+    car_brand = models.ForeignKey(
+        verbose_name = "Car brand",
+        to = Brand,
+        related_name = 'cars',
+        on_delete = models.CASCADE,
+    )
+
+    model_name = models.CharField(
+        max_length=255,
+        verbose_name = "Model name",
+    )
+
+    model_year = models.CharField(
+        max_length=4,
+        verbose_name = "Model year",
+    )
+
+    car_class = models.ForeignKey(
+        verbose_name = "Car class",
+        to = Class,
+        related_name = 'cars',
+        on_delete = models.CASCADE,
+    )
+
+    car_transmission = models.ForeignKey(
+        verbose_name = "Car transmission",
+        to = Transmisson,
+        related_name = 'cars',
+        on_delete = models.CASCADE,
+    )
+
+    engine_capacity = models.CharField(
+        max_length=3,
+        choices=CarEngineCapacity.choices,
+    )
+
+    car_type = models.CharField(
+        max_length=3,
+        choices=CarType.choices,
+    )
+
+    car_type = models.CharField(
+        max_length=2,
+        choices=SeatNumber.choices,
+    )
+
+    created = models.DateTimeField(
+        verbose_name = "Created",
+        auto_now_add = True,
+    )
+
+    updated = models.DateTimeField(
+        verbose_name = "Updated",
+        auto_now = True,
+    )
+
+    class Meta:
+
+        verbose_name = "Car"
+        verbose_name_plural = "Cars"
+        ordering = ('-created',)
+        
+    def __str__(self):
+        return self.title
+
+
+class CarImage(models.Model):
+
+    car = models.ForeignKey(
+        verbose_name = "Car",
+        to = Car,
+        related_name = 'car_images',
+        on_delete = models.CASCADE,
+    )
+
+    image = models.ImageField(
+        upload_to ='car/images/',
+        verbose_name = "Image",
+    )
+    
+    created = models.DateTimeField(
+        verbose_name = "Created",
+        auto_now_add = True,
+    )
+
+    updated = models.DateTimeField(
+        verbose_name = "Updated",
+        auto_now = True,
+    )
+
+    class Meta:
+
+        verbose_name = "Car image"
+        verbose_name_plural = "Car images"
+        ordering = ('-created',)
+        
+    def __str__(self):
+        return "%s %s" % (self.car.car_brand.title, model_name)

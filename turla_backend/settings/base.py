@@ -28,6 +28,11 @@ SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = list([host.strip() for host in os.environ.get('ALLOWED_HOSTS').split(';')])
 
+#Firebase
+FIREBASE_TOKEN_TIME_EXPIRATION = int(env('FIREBASE_TOKEN_TIME_EXPIRATION'))
+FIREBASE_API_KEY = env('FIREBASE_API_KEY')
+FIREBASE_API_URL = env('FIREBASE_API_URL')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'cars',
     'locations',
+    'users',
 ]
 
 MIDDLEWARE = [
