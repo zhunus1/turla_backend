@@ -2,7 +2,9 @@ from rest_framework import serializers
 from .models import (
     Brand,
     Class,
-    Transmisson
+    Transmisson,
+    Car,
+    CarImage
 )
 
 class BrandSearializer(serializers.ModelSerializer):
@@ -19,6 +21,15 @@ class BrandSearializer(serializers.ModelSerializer):
         request = self.context.get('request')
         logo_url = brand.logo.url
         return request.build_absolute_uri(logo_url)
+
+class BrandListSearializer(serializers.ModelSerializer):
+    class Meta:
+        model = Brand
+        fields = (
+            'id',
+            'title',
+        )
+
 
 class ClassSearializer(serializers.ModelSerializer):
     logo_url = serializers.SerializerMethodField()
@@ -49,3 +60,44 @@ class TransmissonSearializer(serializers.ModelSerializer):
         request = self.context.get('request')
         logo_url = transmisson.logo.url
         return request.build_absolute_uri(logo_url)
+
+
+class CarImageSearializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+    class Meta:
+        model = CarImage
+        fields = (
+            'id',
+            'image_url',
+        )
+
+    def get_image_url(self, car_image):
+        request = self.context.get('request')
+        image_url = car_image.image.url
+        return request.build_absolute_uri(image_url)
+
+class CarListSearializer(serializers.ModelSerializer):
+    car_images = CarImageSearializer(many=True)
+    car_brand = BrandListSearializer()
+    class Meta:
+        model = Car
+        fields = (
+            'id',
+            'car_images',
+            'car_brand',
+            'model_name',
+            'model_year',
+        )
+
+class CarDetailSearializer(serializers.ModelSerializer):
+    car_images = CarImageSearializer(many=True)
+    car_brand = BrandListSearializer()
+    class Meta:
+        model = Car
+        fields = (
+            'id',
+            'car_images',
+            'car_brand',
+            'model_name',
+            'model_year',
+        )
