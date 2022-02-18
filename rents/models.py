@@ -38,17 +38,15 @@ class Rent(models.Model):
         max_digits = 8,
     )
 
-    pick_up = models.ForeignKey(
+    pick_up = models.ManyToManyField(
         verbose_name = "Pick up",
         to = Location,
-        on_delete = models.CASCADE,
         related_name = 'rents_pick_up',
     )
 
-    drop_off = models.ForeignKey(
+    drop_off = models.ManyToManyField(
         verbose_name = "Drop off",
         to = Location,
-        on_delete = models.CASCADE,
         default = pick_up,
         related_name = 'rents_drop_off',
     )
