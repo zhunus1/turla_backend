@@ -3,7 +3,8 @@ from rest_framework import viewsets
 from .serializers import (
     BrandSearializer,
     ClassSearializer,
-    TransmissonSearializer
+    TransmissonSearializer,
+    BrandListSearializer
 )
 from .models import (
     Brand,
@@ -13,7 +14,7 @@ from .models import (
 
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Brand.objects.all()
-    serializer_class = BrandSearializer
+    serializer_class = BrandListSearializer
 
 class ClassViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Class.objects.all()

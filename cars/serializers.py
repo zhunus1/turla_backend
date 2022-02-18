@@ -6,8 +6,9 @@ from .models import (
     Car,
     CarImage
 )
-
-
+from rents.serializers import (
+    RentListSearializer,
+)
 class BrandSearializer(serializers.ModelSerializer):
     logo_url = serializers.SerializerMethodField()
     class Meta:
@@ -22,14 +23,6 @@ class BrandSearializer(serializers.ModelSerializer):
         request = self.context.get('request')
         logo_url = brand.logo.url
         return request.build_absolute_uri(logo_url)
-
-class BrandListSearializer(serializers.ModelSerializer):
-    class Meta:
-        model = Brand
-        fields = (
-            'id',
-            'title',
-        )
 
 
 class ClassSearializer(serializers.ModelSerializer):
@@ -78,22 +71,26 @@ class CarImageSearializer(serializers.ModelSerializer):
         return request.build_absolute_uri(image_url)
 
 class CarListSearializer(serializers.ModelSerializer):
-    car_images = CarImageSearializer(many=True)
-    car_brand = BrandListSearializer()
+    rent = RentListSearializer()
     class Meta:
         model = Car
         fields = (
             'id',
-            'car_images',
-            'car_brand',
             'car_main_image',
             'model_name',
             'model_year',
+            'rent',
         )
 
-        #price per day
-        #total calculate by selected days
-        #deposit
+class BrandListSearializer(serializers.ModelSerializer):
+    cars = CarListSearializer(many=True)
+    class Meta:
+        model = Brand
+        fields = (
+            'id',
+            'title',
+            'cars',
+        )
 
 # class CarDetailSearializer(serializers.ModelSerializer):
 #     car_images = CarImageSearializer(many=True)
