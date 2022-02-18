@@ -7,6 +7,7 @@ from .models import (
     CarImage
 )
 
+
 class BrandSearializer(serializers.ModelSerializer):
     logo_url = serializers.SerializerMethodField()
     class Meta:
@@ -85,19 +86,32 @@ class CarListSearializer(serializers.ModelSerializer):
             'id',
             'car_images',
             'car_brand',
+            'car_main_image',
             'model_name',
             'model_year',
         )
 
-class CarDetailSearializer(serializers.ModelSerializer):
-    car_images = CarImageSearializer(many=True)
-    car_brand = BrandListSearializer()
-    class Meta:
-        model = Car
-        fields = (
-            'id',
-            'car_images',
-            'car_brand',
-            'model_name',
-            'model_year',
-        )
+        #price per day
+        #total calculate by selected days
+        #deposit
+
+# class CarDetailSearializer(serializers.ModelSerializer):
+#     car_images = CarImageSearializer(many=True)
+#     car_brand = BrandListSearializer()
+#     class Meta:
+#         model = Car
+#         fields = (
+#             'id',
+#             'car_brand',
+#             'model_name',
+#             'model_year',
+#             'car_main_image',
+#             'car_images',
+#         )
+#         #rating score 
+
+#         #car class
+#         #transmission
+#         #fuel type
+#         #seats
+#         #body type

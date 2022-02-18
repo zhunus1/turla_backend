@@ -137,6 +137,11 @@ class Car(models.Model):
         verbose_name = "Model name",
     )
 
+    car_main_image = models.ImageField(
+        upload_to ='car/images/main',
+        verbose_name = "Car main image",
+    )
+
     model_year = models.CharField(
         max_length=4,
         verbose_name = "Model year",
@@ -166,7 +171,7 @@ class Car(models.Model):
         choices=CarType.choices,
     )
 
-    car_type = models.CharField(
+    seat_number = models.CharField(
         max_length=2,
         choices=SeatNumber.choices,
     )
@@ -188,7 +193,7 @@ class Car(models.Model):
         ordering = ('-created',)
         
     def __str__(self):
-        return self.title
+        return "%s %s" % (self.car_brand.title, self.model_name)
 
 
 class CarImage(models.Model):
@@ -201,7 +206,7 @@ class CarImage(models.Model):
     )
 
     image = models.ImageField(
-        upload_to ='car/images/',
+        upload_to ='car/images/others',
         verbose_name = "Image",
     )
     

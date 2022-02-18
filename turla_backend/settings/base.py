@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'djmoney',
     'cars',
     'locations',
     'users',
@@ -121,6 +122,8 @@ LANGUAGES = (
 
 MODELTRANSLATION_DEFAULT_LANGUAGE = 'ru'
 
+CURRENCIES = ('TRY')
+CURRENCY_CHOICES = [('TRY', 'TRY ₺'),]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
