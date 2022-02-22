@@ -7,8 +7,8 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register(r'brand', BrandViewSet)
-router.register(r'class', ClassViewSet)
-router.register(r'transmission', TransmissonViewSet)
+router.register(r'brand', BrandViewSet, basename='brans')
+router.register(r'class', ClassViewSet, basename='class')
+router.register(r'transmission', TransmissonViewSet, basename='transmission')
 
 urlpatterns = [] + router.urls

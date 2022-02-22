@@ -6,9 +6,7 @@ from .models import (
     Car,
     CarImage
 )
-from rents.serializers import (
-    RentListSearializer,
-)
+
 class BrandSearializer(serializers.ModelSerializer):
     logo_url = serializers.SerializerMethodField()
     class Meta:
@@ -70,45 +68,23 @@ class CarImageSearializer(serializers.ModelSerializer):
         image_url = car_image.image.url
         return request.build_absolute_uri(image_url)
 
-class CarListSearializer(serializers.ModelSerializer):
-    rent = RentListSearializer()
-    class Meta:
-        model = Car
-        fields = (
-            'id',
-            'car_main_image',
-            'model_name',
-            'model_year',
-            'rent',
-        )
 
 class BrandListSearializer(serializers.ModelSerializer):
-    cars = CarListSearializer(many=True)
     class Meta:
         model = Brand
         fields = (
             'id',
             'title',
-            'cars',
         )
 
-# class CarDetailSearializer(serializers.ModelSerializer):
-#     car_images = CarImageSearializer(many=True)
-#     car_brand = BrandListSearializer()
-#     class Meta:
-#         model = Car
-#         fields = (
-#             'id',
-#             'car_brand',
-#             'model_name',
-#             'model_year',
-#             'car_main_image',
-#             'car_images',
-#         )
-#         #rating score 
-
-#         #car class
-#         #transmission
-#         #fuel type
-#         #seats
-#         #body type
+class CarListSearializer(serializers.ModelSerializer):
+    car_brand = BrandListSearializer()
+    class Meta:
+        model = Car
+        fields = (
+            'id',
+            'car_main_image',
+            'car_brand',
+            'model_name',
+            'model_year',
+        )

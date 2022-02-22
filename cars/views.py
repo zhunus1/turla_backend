@@ -4,7 +4,7 @@ from .serializers import (
     BrandSearializer,
     ClassSearializer,
     TransmissonSearializer,
-    BrandListSearializer
+    BrandSearializer
 )
 from .models import (
     Brand,
@@ -14,7 +14,7 @@ from .models import (
 
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Brand.objects.all()
-    serializer_class = BrandListSearializer
+    serializer_class = BrandSearializer
 
 class ClassViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Class.objects.all()

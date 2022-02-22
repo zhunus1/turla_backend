@@ -5,6 +5,6 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register(r'rents', RentViewSet)
+router.register(r'rents', RentViewSet, basename='rents')
 
 urlpatterns = [] + router.urls

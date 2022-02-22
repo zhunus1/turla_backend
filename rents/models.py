@@ -47,7 +47,6 @@ class Rent(models.Model):
     drop_off = models.ManyToManyField(
         verbose_name = "Drop off",
         to = Location,
-        default = pick_up,
         related_name = 'rents_drop_off',
     )
 
