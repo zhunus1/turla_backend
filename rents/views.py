@@ -54,7 +54,7 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
         return super().filter_queryset(queryset)
     
     def count_free(self, months, rent):
-        #Today is a limit, you can not rent a car in the past
+
         current_day_year = datetime.date.today()
         last_day_year = datetime.date.today().replace(month=12, day=31)
 
