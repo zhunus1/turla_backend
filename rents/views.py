@@ -92,32 +92,19 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
             .filter(pick_up=pick_up,
                     drop_off=drop_off)
 
-        #filtered by locations
         year = datetime.date.today().year
         
         months = dict.fromkeys(range(1, 13))
         for i in range(1, 13):
             days = list(itertools.chain.from_iterable(calendar.monthcalendar(year, i)))
             clean_days = dict.fromkeys([day for day in days if day != 0], 0)
-            #HERE NEED TO FILL DATES WITH OCCURIENCES!            
             months[i] = clean_days
         
 
         for i in range(len(queryset)):
             self.count_free(months, queryset[i])
 
-        app_json = json.dumps(months)
-        print(app_json)
-        #HERE NEED TO CONVERT DICT TO JSON AND RETURN TO FRONT-END
+        data = json.dumps(months)
 
-
-        #now we need to return all rents filtered by dates of months
- 
-        # page = self.paginate_queryset(queryset)
-        # if page is not None:
-        #     serializer = self.get_serializer(page, many=True)
-        #     return self.get_paginated_response(serializer.data)
-
-        # serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(data)
 
