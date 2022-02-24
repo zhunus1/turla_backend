@@ -58,24 +58,24 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
         current_day_year = datetime.date.today()
         last_day_year = datetime.date.today().replace(month=12, day=31)
 
-        start_date_year = rent.start_date.year
-        start_date_month = rent.start_date.month
-        start_date_day = rent.start_date.day
+        current_year = datetime.date.today().year
+        start_date = rent.start_date
+        end_date = rent.end_date
 
-        end_date_year = rent.end_date.year
-        end_date_month = rent.end_date.month
-        end_date_day = rent.end_date.day
-
-        if start_date_month == end_date_month:
-            for i in range(1, start_date_day):
-                months[start_date_month][i] += 1
-            for j in range(end_date_day + 1, monthrange(start_date_year, start_date_month)[1] + 1):
-                months[start_date_month][j] += 1
+        if (start_date == None and end_date == None):
+            for i in range(1, 13):
+                for j in range(1, monthrange(current_year, list(months)[i-1])[1]+1):
+                    months[i][j] += 1
+        elif (start_date.month == end_date.month):
+            for i in range(1, start_date.day):
+                months[start_date.month][i] += 1
+            for j in range(end_date.day + 1, monthrange(start_date.year, start_date.month)[1] + 1):
+                months[start_date.month][j] += 1
         else:
-            for i in range(1, start_date_day):
-                months[start_date_month][i] += 1
-            for j in range(end_date_day + 1, monthrange(end_date_year, end_date_month)[1]):
-                months[end_date_month][j] += 1
+            for i in range(1, start_date.day):
+                months[start_date.month][i] += 1
+            for j in range(end_date.day + 1, monthrange(end_date.year, end_date.month)[1]):
+                months[end_date.month][j] += 1
 
 
     @action(detail=False, methods=['GET'])
@@ -97,7 +97,7 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
         
         months = dict.fromkeys(range(1, 13))
         for i in range(1, 13):
-            days = list(itertools.chain.from_iterable(calendar.monthcalendar(year, 12)))
+            days = list(itertools.chain.from_iterable(calendar.monthcalendar(year, i)))
             clean_days = dict.fromkeys([day for day in days if day != 0], 0)
             #HERE NEED TO FILL DATES WITH OCCURIENCES!            
             months[i] = clean_days
