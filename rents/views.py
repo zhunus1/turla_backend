@@ -1,13 +1,21 @@
+import calendar
+import json
+from calendar import monthrange
+import datetime
+import itertools
 from django.shortcuts import render
 from rest_framework import viewsets
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.response import Response
+from rest_framework.decorators import action
 from .models import (
     Rent,
 )
 from .serializers import (
     RentListSearializer,
-    RentFilterSerializer
+    RentFilterSerializer,
+    RentByLocationSerializer,
 )
 from .filters import (
     RentFilter,
@@ -33,15 +41,83 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
     def filter_queryset(self, queryset):
-        serialzier = RentFilterSerializer(data=self.request.query_params)
-        serialzier.is_valid(raise_exception=True)
+        serializer = RentFilterSerializer(data=self.request.query_params)
+        serializer.is_valid(raise_exception=True)
 
-        start_date = serialzier.validated_data.get('start_date')
-        end_date = serialzier.validated_data.get('end_date')
+        start_date = serializer.validated_data.get('start_date')
+        end_date = serializer.validated_data.get('end_date')
 
         queryset = queryset.exclude(
             Q(start_date__lte=end_date),
             Q(end_date__gte=start_date),
         )
-        #exclude
         return super().filter_queryset(queryset)
+    
+    def count_free(self, months, rent):
+        #Today is a limit, you can not rent a car in the past
+        current_day_year = datetime.date.today()
+        last_day_year = datetime.date.today().replace(month=12, day=31)
+
+        start_date_year = rent.start_date.year
+        start_date_month = rent.start_date.month
+        start_date_day = rent.start_date.day
+
+        end_date_year = rent.end_date.year
+        end_date_month = rent.end_date.month
+        end_date_day = rent.end_date.day
+
+        if start_date_month == end_date_month:
+            for i in range(1, start_date_day):
+                months[start_date_month][i] += 1
+            for j in range(end_date_day + 1, monthrange(start_date_year, start_date_month)[1] + 1):
+                months[start_date_month][j] += 1
+        else:
+            for i in range(1, start_date_day):
+                months[start_date_month][i] += 1
+            for j in range(end_date_day + 1, monthrange(end_date_year, end_date_month)[1]):
+                months[end_date_month][j] += 1
+
+
+    @action(detail=False, methods=['GET'])
+    def information(self, request):
+        queryset = self.get_queryset()
+
+        serializer = RentByLocationSerializer(data=request.GET)
+        serializer.is_valid(raise_exception=True)
+        
+        pick_up = serializer.validated_data.get('pick_up')
+        drop_off = serializer.validated_data.get('drop_off')
+        
+        queryset = queryset \
+            .filter(pick_up=pick_up,
+                    drop_off=drop_off)
+
+        #filtered by locations
+        year = datetime.date.today().year
+        
+        months = dict.fromkeys(range(1, 13))
+        for i in range(1, 13):
+            days = list(itertools.chain.from_iterable(calendar.monthcalendar(year, 12)))
+            clean_days = dict.fromkeys([day for day in days if day != 0], 0)
+            #HERE NEED TO FILL DATES WITH OCCURIENCES!            
+            months[i] = clean_days
+        
+
+        for i in range(len(queryset)):
+            self.count_free(months, queryset[i])
+
+        app_json = json.dumps(months)
+        print(app_json)
+        #HERE NEED TO CONVERT DICT TO JSON AND RETURN TO FRONT-END
+
+
+        #now we need to return all rents filtered by dates of months
+ 
+        # page = self.paginate_queryset(queryset)
+        # if page is not None:
+        #     serializer = self.get_serializer(page, many=True)
+        #     return self.get_paginated_response(serializer.data)
+
+        # serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+

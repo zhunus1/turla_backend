@@ -20,3 +20,7 @@ class RentListSearializer(serializers.ModelSerializer):
 class RentFilterSerializer(serializers.Serializer):
     start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     end_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+
+class RentByLocationSerializer(serializers.Serializer):
+    pick_up = serializers.IntegerField()
+    drop_off = serializers.IntegerField()
