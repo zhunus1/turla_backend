@@ -6,7 +6,37 @@ from cars.models import (
 from locations.models import (
     Location,
 )
+from companies.models import (
+    DriverCondition,
+    DriverRequirement
+)
 # Create your models here.
+
+class RentFeature(models.Model):
+    title = models.CharField(
+        max_length=31,
+        verbose_name = "Title",
+    )
+
+    created = models.DateTimeField(
+        verbose_name = "Created",
+        auto_now_add = True,
+    )
+
+    updated = models.DateTimeField(
+        verbose_name = "Updated",
+        auto_now = True,
+    )
+
+    class Meta:
+
+        verbose_name = "Rent feature"
+        verbose_name_plural = "Rent features"
+        ordering = ('-created',)
+        
+    def __str__(self):
+        return self.title
+
 
 class Rent(models.Model):
     class DeliveryType(models.TextChoices):
@@ -67,6 +97,27 @@ class Rent(models.Model):
         choices=DeliveryType.choices,
         verbose_name = "Delivery type",
     )
+
+    features = models.ManyToManyField(
+        verbose_name = "Feature",
+        to = RentFeature,
+        related_name = 'rents_features',
+    )
+
+    driver_requirements = models.ForeignKey(
+        to = DriverRequirement, 
+        on_delete = models.CASCADE,
+        related_name = 'rents',
+        verbose_name = "Driver requirements",
+    )
+
+    driver_conditions = models.ForeignKey(
+        to = DriverCondition, 
+        on_delete = models.CASCADE,
+        related_name = 'rents',
+        verbose_name = "Driver conditions",
+    )
+
 
     created = models.DateTimeField(
         verbose_name = "Created",
