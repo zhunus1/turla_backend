@@ -12,7 +12,7 @@ class RentListSearializer(serializers.ModelSerializer):
         fields = (
             'id',
             'car',
-            'rent_payment',
+            'price',
             'total_cost',
             'deposit',
         )

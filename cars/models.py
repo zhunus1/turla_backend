@@ -125,6 +125,13 @@ class Car(models.Model):
         seven = '7', ('7')
         ten = '10', ('10')
     
+    class FuelType(models.TextChoices):
+        diesel = 'D', ('Diesel')
+        petrol = 'P', ('Petrol')
+        electricity = 'E', ('Electricity')
+        hybrid = 'H', ('Hybrid')
+        gaz = 'G', ('Gaz')
+        
     car_brand = models.ForeignKey(
         verbose_name = "Car brand",
         to = Brand,
@@ -164,16 +171,25 @@ class Car(models.Model):
     engine_capacity = models.CharField(
         max_length=3,
         choices=CarEngineCapacity.choices,
+        verbose_name = "Engine capacity",
     )
 
     car_type = models.CharField(
         max_length=3,
         choices=CarType.choices,
+        verbose_name = "Car type",
     )
 
     seat_number = models.CharField(
         max_length=2,
         choices=SeatNumber.choices,
+        verbose_name = "Seat number",
+    )
+
+    fuel_type = models.CharField(
+        max_length=1,
+        choices=FuelType.choices,
+        verbose_name = "Fuel type",
     )
 
     created = models.DateTimeField(
