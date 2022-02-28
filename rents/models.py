@@ -8,7 +8,8 @@ from locations.models import (
 )
 from companies.models import (
     DriverCondition,
-    DriverRequirement
+    DriverRequirement,
+    Company
 )
 # Create your models here.
 
@@ -88,10 +89,6 @@ class Rent(models.Model):
         related_name = 'rents_drop_off',
     )
 
-    condition = models.TextField(
-        verbose_name = "Condition",
-    )
-
     delivery_type = models.CharField(
         max_length=63,
         choices=DeliveryType.choices,
@@ -104,20 +101,12 @@ class Rent(models.Model):
         related_name = 'rents_features',
     )
 
-    driver_requirements = models.ForeignKey(
-        to = DriverRequirement, 
+    company = models.ForeignKey(
+        to = Company, 
         on_delete = models.CASCADE,
         related_name = 'rents',
-        verbose_name = "Driver requirements",
+        verbose_name = "Company",
     )
-
-    driver_conditions = models.ForeignKey(
-        to = DriverCondition, 
-        on_delete = models.CASCADE,
-        related_name = 'rents',
-        verbose_name = "Driver conditions",
-    )
-
 
     created = models.DateTimeField(
         verbose_name = "Created",
@@ -143,3 +132,12 @@ class Rent(models.Model):
         if self.start_date.day == self.end_date.day:
             return self.price.amount
         return self.price.amount * (self.end_date.day - self.start_date.day)
+    
+    @property
+    def total_cost_discount(self):
+        if self.start_date.day == self.end_date.day:
+            return self.price.amount 
+        
+        discount_percentage = self.company.discount_percentage
+        discount = (self.price.amount * discount_percentage) / 100
+        return (self.price.amount - discount) * (self.end_date.day - self.start_date.day)

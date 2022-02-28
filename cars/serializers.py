@@ -77,6 +77,22 @@ class BrandListSearializer(serializers.ModelSerializer):
             'title',
         )
 
+class ClassListSearializer(serializers.ModelSerializer):
+    class Meta:
+        model = Class
+        fields = (
+            'id',
+            'title',
+        )
+
+class TransmissonListSearializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transmisson
+        fields = (
+            'id',
+            'title',
+        )
+
 class CarListSearializer(serializers.ModelSerializer):
     car_brand = BrandListSearializer()
     class Meta:
@@ -87,4 +103,24 @@ class CarListSearializer(serializers.ModelSerializer):
             'car_brand',
             'model_name',
             'model_year',
+        )
+
+class CarDetailSearializer(serializers.ModelSerializer):
+    car_brand = BrandListSearializer()
+    car_class = ClassListSearializer()
+    car_transmission = TransmissonListSearializer()
+
+    class Meta:
+        model = Car
+        fields = (
+            'id',
+            'car_brand',
+            'model_name',
+            'model_year',
+            'car_main_image',
+            'car_class',
+            'car_transmission',
+            'fuel_type',
+            'seat_number',
+            'car_type',
         )

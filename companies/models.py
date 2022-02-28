@@ -3,48 +3,8 @@ from djmoney.models.fields import MoneyField
 
 # Create your models here.
 
-class Company(models.Model):
-    name = models.CharField(
-        max_length=63,
-        verbose_name = "Title",
-    )
-
-    rental_conditions = models.TextField(
-        verbose_name = "Rental conditions",
-    )
-
-    address = models.CharField(
-        max_length=127,
-        verbose_name = "Address",
-    )
-
-    created = models.DateTimeField(
-        verbose_name = "Created",
-        auto_now_add = True,
-    )
-
-    updated = models.DateTimeField(
-        verbose_name = "Updated",
-        auto_now = True,
-    )
-
-    class Meta:
-
-        verbose_name = "Company"
-        verbose_name_plural = "Companies"
-        ordering = ('-created',)
-        
-    def __str__(self):
-        return self.name
-
 
 class DriverRequirement(models.Model):
-    company = models.ForeignKey(
-        to = Company, 
-        on_delete = models.CASCADE,
-        related_name = 'driver_requirements',
-        verbose_name = "Company",
-    )
     
     description = models.TextField(
         verbose_name = "Description",
@@ -82,16 +42,8 @@ class DriverRequirement(models.Model):
         verbose_name_plural = "Driver requirements"
         ordering = ('-created',)
         
-    def __str__(self):
-        return self.company.name
 
 class DriverCondition(models.Model):
-    company = models.ForeignKey(
-        to = Company, 
-        on_delete = models.CASCADE,
-        related_name = 'driver_conditions',
-        verbose_name = "Company",
-    )
 
     description = models.TextField(
         verbose_name = "Description",
@@ -129,5 +81,54 @@ class DriverCondition(models.Model):
         verbose_name_plural = "Driver conditions"
         ordering = ('-created',)
         
+class Company(models.Model):
+    name = models.CharField(
+        max_length=63,
+        verbose_name = "Title",
+    )
+
+    rental_conditions = models.TextField(
+        verbose_name = "Rental conditions",
+    )
+
+    discount_percentage = models.PositiveSmallIntegerField(
+        verbose_name = "Discount percentage",
+    )
+
+    address = models.CharField(
+        max_length=127,
+        verbose_name = "Address",
+    )
+
+    driver_requirements = models.OneToOneField(
+        to = DriverRequirement, 
+        on_delete = models.CASCADE,
+        related_name = 'company',
+        verbose_name = "Driver requirements",
+    )
+
+    driver_conditions = models.OneToOneField(
+        to = DriverCondition, 
+        on_delete = models.CASCADE,
+        related_name = 'company',
+        verbose_name = "Driver conditions",
+    )
+
+    created = models.DateTimeField(
+        verbose_name = "Created",
+        auto_now_add = True,
+    )
+
+    updated = models.DateTimeField(
+        verbose_name = "Updated",
+        auto_now = True,
+    )
+
+    class Meta:
+
+        verbose_name = "Company"
+        verbose_name_plural = "Companies"
+        ordering = ('-created',)
+        
     def __str__(self):
-        return self.company.name
+        return self.name
