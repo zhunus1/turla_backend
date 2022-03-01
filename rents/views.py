@@ -28,8 +28,6 @@ from .filters import (
 
 class RentViewSet(viewsets.ReadOnlyModelViewSet):
     #filter by age between 25 - 70 driver requirements minimum driver age
-    #filter by car type
-    #filter by transmission
 
     filter_backends = (DjangoFilterBackend,)
     filter_class = RentFilter
