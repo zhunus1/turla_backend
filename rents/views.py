@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from django.db.models import Q
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import action
 from .models import (
     Rent,
@@ -26,6 +27,10 @@ from .filters import (
 # Create your views here.
 
 class RentViewSet(viewsets.ReadOnlyModelViewSet):
+    #filter by age between 25 - 70 driver requirements minimum driver age
+    #filter by car type
+    #filter by transmission
+
     filter_backends = (DjangoFilterBackend,)
     filter_class = RentFilter
 
@@ -64,14 +69,13 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
     
     def count_free(self, months, rent):
 
-        current_day_year = datetime.date.today() - timedelta(days = 15 )
+        current_day_year = datetime.date.today()
         last_day_year = datetime.date.today().replace(month=12, day=31)
 
         current_year = datetime.date.today().year
         start_date = rent.start_date
         end_date = rent.end_date
 
-        print('Today is:', current_day_year.day)
 
         if start_date == None and end_date == None:
             for i in range(1, 13):
@@ -98,7 +102,6 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
                         months[j][i] += 1
                     for k in range(1, end + 1):
                         months[j + 1][k] += 1
-
             # теперь от даты конца и до конца года
             for j in range(start_date.month, 13):
                 if j == start_date.month:
@@ -112,28 +115,6 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
                     for i in range(start, end):
                         months[j][i] += 1
 
-
-        
-        
-        
-        # elif (start_date.month == end_date.month):
-        #     if current_day_year.month == start_date.month:
-        #         for i in range(current_day_year.day, start_date.day):
-        #             months[start_date.month][i] += 1
-        #     elif current_day_year.month < start_date.month:
-        #         for i in range(current_day_year.day, monthrange(end_date.year, current_day_year.month)[1]+1):
-        #             months[current_day_year.month][i] += 1
-        #         for j in range(1, start_date.day):
-        #             months[start_date.month][j] += 1
-            #Теперь надо учесть от даты конца до конца года
-
-
-            
-        # else:
-        #     for i in range(current_day_year, start_date.day):
-        #         months[start_date.month][i] += 1
-        #     for j in range(end_date.day + 1, monthrange(end_date.year, end_date.month)[1]):
-        #         months[end_date.month][j] += 1
 
 
     @action(detail=False, methods=['GET'])
@@ -163,6 +144,6 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
             self.count_free(months, queryset[i])
 
         data = json.dumps(months)
-        print(data)
-        return Response(data)
+        
+        return Response(data, status=status.HTTP_200_OK)
 
