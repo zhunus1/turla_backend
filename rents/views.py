@@ -99,9 +99,21 @@ class RentViewSet(viewsets.ReadOnlyModelViewSet):
                     for k in range(1, end + 1):
                         months[j + 1][k] += 1
 
+            # теперь от даты конца и до конца года
+            for j in range(start_date.month, 13):
+                if j == start_date.month:
+                    start = end_date.day
+                    end = monthrange(current_year, j)[1] + 1
+                    for i in range(start, end):
+                        months[j][i] += 1
+                else:
+                    start = 1
+                    end = monthrange(current_year, j)[1] + 1
+                    for i in range(start, end):
+                        months[j][i] += 1
 
-        # баг на месяц назад почему то 
-        # теперь от даты конца и до конца года
+
+        
         
         
         # elif (start_date.month == end_date.month):
